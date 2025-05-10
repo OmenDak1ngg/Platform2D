@@ -1,13 +1,16 @@
+using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Player))]
+[RequireComponent(typeof(Wallet))]
 public class Collector : MonoBehaviour
 {
-    private Player _player;
+    private Wallet _player;
+
+    public event Action<Coin> TakedCoin;
 
     private void Awake()
     {
-        _player = transform.GetComponent<Player>();
+        _player = transform.GetComponent<Wallet>();
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
@@ -15,7 +18,7 @@ public class Collector : MonoBehaviour
         if(collider.transform.TryGetComponent<Coin>(out Coin coin))
         {
             _player.AddCoin();
-            Destroy(coin.gameObject);
+            TakedCoin?.Invoke(coin);
         }
     }
 }

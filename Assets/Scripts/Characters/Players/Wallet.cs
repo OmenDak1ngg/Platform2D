@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider2D))]
-public class Player : MonoBehaviour
+public class Wallet : MonoBehaviour
 {
     private int _coinsCollected;
 
