@@ -57,7 +57,7 @@ public class CoinSpawner : MonoBehaviour
             }
             else
             {
-                Debug.Log("pizda");
+                Debug.Log("null");
             }
         }
     }
@@ -106,7 +106,7 @@ public class CoinSpawner : MonoBehaviour
             }
         }
 
-        Debug.Log("pizda");
+        Debug.Log("null");
         return null;
     }
 }
