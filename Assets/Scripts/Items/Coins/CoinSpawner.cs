@@ -51,8 +51,13 @@ public class CoinSpawner : MonoBehaviour
 
             if (_currentSpawnpoint != null)
             {
+                Debug.Log("спавн монеты");
                 _pool.Get();
                 yield return delay;
+            }
+            else
+            {
+                Debug.Log("pizda");
             }
         }
     }
@@ -101,6 +106,7 @@ public class CoinSpawner : MonoBehaviour
             }
         }
 
+        Debug.Log("pizda");
         return null;
     }
 }
