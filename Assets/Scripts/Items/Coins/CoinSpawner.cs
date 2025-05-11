@@ -13,6 +13,7 @@ public class CoinSpawner : MonoBehaviour
 
     private ObjectPool<Coin> _pool;
     private CoinSpawnpoint _currentSpawnpoint;
+    private float _coinCheckRaidus;
 
     private void OnEnable()
     {
@@ -26,6 +27,7 @@ public class CoinSpawner : MonoBehaviour
 
     private void Awake()
     {
+        _coinCheckRaidus = 1.5f;
         CreatePool();
     }
 
@@ -82,13 +84,12 @@ public class CoinSpawner : MonoBehaviour
     {
         List<CoinSpawnpoint> avalaibleSpawnPoints = new List<CoinSpawnpoint>(_spawnpoints);
         int RandomSpawnPointIndex;
-        float checkRadius = 1.5f;
 
         while(avalaibleSpawnPoints.Count > 0)
         {
             RandomSpawnPointIndex = Random.Range(0, avalaibleSpawnPoints.Count - 1);
             CoinSpawnpoint spawnpoint = avalaibleSpawnPoints[RandomSpawnPointIndex];
-            Collider2D coin = Physics2D.OverlapCircle(spawnpoint.transform.position, checkRadius, LayerMask.GetMask("Coin"));
+            Collider2D coin = Physics2D.OverlapCircle(spawnpoint.transform.position, _coinCheckRaidus, LayerMask.GetMask("Coin"));
 
             if (coin != null)
             {

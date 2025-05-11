@@ -15,7 +15,7 @@ public class Collector : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if(collider.transform.TryGetComponent<Coin>(out Coin coin))
+        if(collider.transform.TryGetComponent(out Coin coin))
         {
             _player.AddCoin();
             TakedCoin?.Invoke(coin);
