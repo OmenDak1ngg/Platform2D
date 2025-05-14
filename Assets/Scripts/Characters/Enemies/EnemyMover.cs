@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyMover : CharactersMover
+public class EnemyMover : CharactersFlipper
 {
     [SerializeField] private float _startRestTime;
     [SerializeField] private float _distanceToRest;
@@ -14,7 +14,7 @@ public class EnemyMover : CharactersMover
     protected override void Awake()
     {
         base.Awake();
-
+        _currentTarget = _patrol.GetFirstPatrolPoint();
         _baseSpeed = _speed;
         _isLookingRight = false;
         _restTime = _startRestTime;
@@ -34,7 +34,6 @@ public class EnemyMover : CharactersMover
 
     private void MoveToTarget()
     {
-        Debug.Log($"{_currentTarget.position} - таргрет\n{transform.position} - враг");
         Vector2 direction = _currentTarget.position - transform.position;
         _rigidbody.linearVelocity = direction.normalized * _speed;
     }

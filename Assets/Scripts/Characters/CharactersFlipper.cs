@@ -1,11 +1,9 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class CharactersMover : MonoBehaviour
+public class CharactersFlipper : Character
 {
     private const float _threshold = 0.01f;
-
-    [SerializeField] protected float _speed;
 
     protected bool _isLookingRight;
     protected Rigidbody2D _rigidbody;

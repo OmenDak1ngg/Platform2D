@@ -10,7 +10,7 @@ public class Patrol : MonoBehaviour
     private void Awake()
     {
         _currentPatrolIndex = 0;
-        _maxPatrolsIndex = _points.Length;
+        _maxPatrolsIndex = _points.Length-1;
     }
 
     public Transform GetNextPatrolPoint()
@@ -21,5 +21,10 @@ public class Patrol : MonoBehaviour
             _currentPatrolIndex = _currentPatrolIndex + 1;
 
         return _points[_currentPatrolIndex];
+    }
+
+    public Transform GetFirstPatrolPoint()
+    {
+        return _points[0];
     }
 }

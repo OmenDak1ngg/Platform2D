@@ -1,37 +1,32 @@
 using UnityEngine;
 
-public class PlayerMover : CharactersMover
+public class PlayerMover : CharactersFlipper
 {
-    private static string Horizontal = "Horizontal";
-
+    [SerializeField] private InputReader _inputReader;
     [SerializeField] private float _jumpForce;
     [SerializeField] private GroundChecker _groundChecker;
-
-    private float _moveHorizontal;
-    private bool _isJump;
 
     protected override void Awake()
     {
         base.Awake();
 
         _isLookingRight = true;
-        _isJump = false;
         _rigidbody = GetComponent<Rigidbody2D>();    
     }
 
     protected override void Update()
     {
         base.Update();
-
-        ReadUserInput();
     }
 
     private void FixedUpdate()
     {
         Move();
-        
-        if(_isJump)
+
+        if (_inputReader.TryedToJump)
+        {
             Jump();
+        }
     }
 
     private void Jump()
@@ -40,19 +35,11 @@ public class PlayerMover : CharactersMover
             return;
 
         _rigidbody.AddForce(new Vector2(0, _jumpForce),ForceMode2D.Impulse);
-        _isJump = false;
-    }
-
-    private void ReadUserInput()
-    {
-        _moveHorizontal = Input.GetAxis(Horizontal);
-
-        if (Input.GetKeyDown(KeyCode.Space))
-            _isJump = true;
+        _inputReader.ResetJumpState();
     }
 
     private void Move()
     {
-        _rigidbody.linearVelocity = new Vector2(_moveHorizontal * _speed, _rigidbody.linearVelocity.y);
+        _rigidbody.linearVelocity = new Vector2(_inputReader.Direction * _speed, _rigidbody.linearVelocity.y);
     }
 }
