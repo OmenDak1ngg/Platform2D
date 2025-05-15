@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.Pool;
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 
 public class CoinSpawner : MonoBehaviour
 {
     private readonly string _spawnpointMask = "SpawnPoint";
-    private readonly string _coinMask = "Coin";
 
     [SerializeField] private Coin _prefab;
     [SerializeField] private int _capacity;
@@ -14,13 +14,13 @@ public class CoinSpawner : MonoBehaviour
     [SerializeField] private float _spawnRate;
     [SerializeField] private float _coinCheckRaidus;
 
-    private ObjectPool<Coin> _pool;
     private CoinSpawnpoint _currentSpawnpoint;
     private List<CoinSpawnpoint> _avalaibleSpawnPoints;
+    private ObjectPool<Coin> _pool;
 
     private void Awake()
     {
-        CreatePool();
+        _pool =  CreatePool();
     }
 
     private void Start()
@@ -36,7 +36,8 @@ public class CoinSpawner : MonoBehaviour
     private IEnumerator SpawnWithDelay()
     {
         WaitForSeconds delay = new WaitForSeconds(_spawnRate);
-        while (true)
+
+        while (enabled)
         {
             _currentSpawnpoint = GetRandomAvalaibleSpawnPoint();
 
@@ -49,9 +50,9 @@ public class CoinSpawner : MonoBehaviour
         }
     }
 
-    private void CreatePool()
+    private ObjectPool<Coin> CreatePool()
     {
-        _pool = new ObjectPool<Coin>(
+        return new ObjectPool<Coin>(
             createFunc: () => InstantiateCoin(),
             actionOnGet: (coin) => SpawnCoin(coin),
             actionOnRelease: (coin) => coin.gameObject.SetActive(false),
@@ -59,7 +60,7 @@ public class CoinSpawner : MonoBehaviour
             defaultCapacity: _capacity
             );
     }
-    
+
     private Coin InstantiateCoin()
     {
         Coin newCoin = Instantiate(_prefab);
@@ -76,8 +77,8 @@ public class CoinSpawner : MonoBehaviour
 
     private void DestoyCoin(Coin coin)
     {
-        coin.Taked -= ReleaseCoin;  
-        Destroy( coin.gameObject );
+        coin.Taked -= ReleaseCoin;
+        Destroy(coin.gameObject);
     }
 
     private void ReleaseCoin(Coin coin)
@@ -95,25 +96,13 @@ public class CoinSpawner : MonoBehaviour
 
     private CoinSpawnpoint GetRandomAvalaibleSpawnPoint()
     {
-        _avalaibleSpawnPoints = new List<CoinSpawnpoint>(_spawnpoints);
-        int RandomSpawnPointIndex;
+        _avalaibleSpawnPoints = _spawnpoints.Where(spawnpoint => spawnpoint.IsUsed == false).ToList();
 
-        while(_avalaibleSpawnPoints.Count > 0)
-        {
-            RandomSpawnPointIndex = Random.Range(0, _avalaibleSpawnPoints.Count - 1);
-            CoinSpawnpoint spawnpoint = _avalaibleSpawnPoints[RandomSpawnPointIndex];
-            Collider2D coin = Physics2D.OverlapCircle(spawnpoint.transform.position, _coinCheckRaidus, LayerMask.GetMask(_coinMask));
+        if (_avalaibleSpawnPoints.Count == 0)
+            return null;
+        
+        int RandomSpawnPointIndex = Random.Range(0,_avalaibleSpawnPoints.Count);
 
-            if (coin != null)
-            {
-                _avalaibleSpawnPoints.Remove(spawnpoint);
-            }
-            else
-            {
-                return spawnpoint;
-            }
-        }
-
-        return null;
+        return _avalaibleSpawnPoints[RandomSpawnPointIndex];
     }
 }

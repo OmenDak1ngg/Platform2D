@@ -1,30 +1,29 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyMover : CharactersFlipper
 {
-    [SerializeField] private float _startRestTime;
+    [SerializeField] private float _speed;
     [SerializeField] private float _distanceToRest;
     [SerializeField] private Patrol _patrol;
+    [SerializeField] private float _StartRestTime;
 
-    private float _restTime;
+    private WaitForSeconds _restTime;
     private float _baseSpeed;
-
     private Transform _currentTarget;
 
     protected override void Awake()
     {
+        _isFacingRight = false;
         base.Awake();
-        _currentTarget = _patrol.GetFirstPatrolPoint();
+
+        _restTime = new WaitForSeconds(_StartRestTime);
         _baseSpeed = _speed;
-        _isLookingRight = false;
-        _restTime = _startRestTime;
     }
 
     protected override void Update()
     {
         base.Update();
-
-        UpdatePatrolMovement();
     }
 
     private void FixedUpdate()
@@ -38,23 +37,20 @@ public class EnemyMover : CharactersFlipper
         _rigidbody.linearVelocity = direction.normalized * _speed;
     }
 
-    private void UpdatePatrolMovement()
+    public void SetTarget(Transform target)
     {
-        if (Vector2.SqrMagnitude(transform.position - _currentTarget.position) <= _distanceToRest)
-        {
-            if (_restTime <= 0)
-            {
-                _currentTarget = _patrol.GetNextPatrolPoint();
-                _restTime = _startRestTime;
+        _currentTarget = target;
+    }
 
-                _speed = _baseSpeed;
-            }
-            else
-            {
-                _speed = 0;
+    public IEnumerator Rest()
+    {
+        _speed = 0;
+        yield return _restTime;
+        _speed = _baseSpeed;
+    }
 
-                _restTime -= Time.deltaTime;
-            }
-        }
+    public bool IsReachedTarget()
+    {
+        return Vector2.SqrMagnitude(transform.position - _currentTarget.position) <= _distanceToRest;
     }
 }

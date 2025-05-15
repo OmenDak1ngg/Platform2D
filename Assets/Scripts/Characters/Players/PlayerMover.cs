@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class PlayerMover : CharactersFlipper
 {
-    [SerializeField] private InputReader _inputReader;
+    [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
     [SerializeField] private GroundChecker _groundChecker;
 
     protected override void Awake()
     {
+        _isFacingRight = true;
+
         base.Awake();
 
-        _isLookingRight = true;
         _rigidbody = GetComponent<Rigidbody2D>();    
     }
 
@@ -19,27 +20,16 @@ public class PlayerMover : CharactersFlipper
         base.Update();
     }
 
-    private void FixedUpdate()
-    {
-        Move();
-
-        if (_inputReader.TryedToJump)
-        {
-            Jump();
-        }
-    }
-
-    private void Jump()
+    public void Jump()
     {
         if (_groundChecker.IsGrounded == false)
             return;
 
         _rigidbody.AddForce(new Vector2(0, _jumpForce),ForceMode2D.Impulse);
-        _inputReader.ResetJumpState();
     }
 
-    private void Move()
+    public void Move(float direction)
     {
-        _rigidbody.linearVelocity = new Vector2(_inputReader.Direction * _speed, _rigidbody.linearVelocity.y);
+        _rigidbody.linearVelocity = new Vector2(direction * _speed, _rigidbody.linearVelocity.y);
     }
 }

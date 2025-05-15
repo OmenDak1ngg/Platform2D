@@ -11,11 +11,6 @@ public class GroundChecker : MonoBehaviour
 
     public bool IsGrounded => CheckGround();
 
-    private void Update()
-    {
-        Debug.DrawRay(transform.position, Vector2.down * _groundCheckDistance, Color.red);
-    }
-
     private bool CheckGround()
     {
         Vector2 checkZoneSize = new Vector2(_squareSideSizeX, _squareSideSizeY);

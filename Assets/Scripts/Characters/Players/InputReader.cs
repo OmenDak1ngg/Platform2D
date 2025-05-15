@@ -4,12 +4,12 @@ public class InputReader : MonoBehaviour
 {
     private readonly string Horizontal = "Horizontal";
 
-    public bool TryedToJump { get; private set; }
+    public bool IsTryedToJump { get; private set; }
     public float Direction { get; private set; }
 
     private void Awake()
     {
-        TryedToJump = false;
+        IsTryedToJump = false;
     }
 
     private void Update()
@@ -18,12 +18,12 @@ public class InputReader : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            TryedToJump = true;
+            IsTryedToJump = true;
         }
     }
 
     public void ResetJumpState()
     {
-        TryedToJump = false;
+        IsTryedToJump = false;
     }
 }
